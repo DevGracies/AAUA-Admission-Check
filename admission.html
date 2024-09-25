@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adekunle Ajasin University Admission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Adekunle Ajasin University Admission</h1>
+
+        <label for="course">Select Course</label>
+        <select id="course" onchange="displaySubjects()">
+            <option value="">-- Select a course --</option>
+            <option value="Biochemistry">Biochemistry</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="industrialCchemistry">Industrial Chemistry</option>
+            <option value="AnimalAndEnvironmentalBiology">Animal and Environmental Biology</option>
+            <option value="ComputerScience">Computer Science</option>
+            <option value="industrialMathmatics">Industrial Mathematics</option>
+            <option value="mathmatics">Mathematics</option>
+            <option value="Geology">Geology</option>
+            <option value="appliedGeophysics">Applied Geophysics</option>
+            <option value="microBiology">Microbiology</option>
+            <option value="physicsAndElectronics">Physics and Electronics</option>
+            <option value="plantScienceAndTechnology">Plant Science and Biotechnology</option>
+        </select>
+
+        <div id="waec-inputs"></div>
+        <div id="jamb-inputs"></div>
+
+        <button onclick="calculateAdmission()">Check Admission</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const data = [
+            {
+                Department: {
+                    Biochemistry: {
+                        jamb: ["biology", "chemistry", "physics", "mathmatics"],
+                        waec: ["biology", "chemistry", "physics", "mathmatics", "EngLish"],
+                        merit: 56, catchment: 54
+                    },
+                    chemistry: {
+                        jamb: ["chemistry", "physics", "biology", "mathmatics"],
+                        waec: ["chemistry", "physics", "biology", "mathmatics", "EngLish"],
+                        merit: 47, catchment: 45
+                    },
+                    industrialCchemistry: {
+                        jamb: ["chemistry", "mathmatics", "biology", "physics"],
+                        waec: ["EngLish", "chemistry", "mathmatics", "physics", "biology"],
+                        merit: 47, catchment: 45
+                    },
+                    AnimalAndEnvironmentalBiology: {
+                        jamb: ["biology", "physics", "chemistry", "physics"],
+                        waec: ["mathmatics", "EngLish", "physics", "biology", "chemistry"],
+                        merit: 44, catchment: 43
+                    },
+                    ComputerScience: {
+                        jamb: ["mathmatics", "physics", "biology", "chemistry", "agriculture", "economics"],
+                        waec: ["English", "mathmatics", "physics", "chemistry", "biology", "Agriculture", "Economics"],
+                        merit: 53, catchment: 45
+                    },
+                    industrialMathmatics: {
+                        jamb: ["mathmatics", "physics", "chemistry", "biology", "economics"],
+                        waec: ["mathmatics", "EngLish", "physics", "chemistry", "biology"],
+                        merit: 40
+                    },
+                    mathmatics: {
+                        jamb: ["mathmatics", "physics", "chemistry", "economics"],
+                        waec: ["mathmatics", "EngLish", "physics", "economics", "chemistry", "Agriculture"],
+                        merit: 40
+                    },
+                    Geology: {
+                        jamb: ["chemistry", "physics", "mathmatics", "EngLish"],
+                        waec: ["EngLish", "mathmatics", "chemistry", "biology", "physics"],
+                        merit: 40
+                    },
+                    appliedGeophysics: {
+                        jamb: ["chemistry", "physics", "mathmatics", "EngLish"],
+                        waec: ["biology", "chemistry", "physics", "mathmatics", "EngLish"],
+                        merit: 40
+                    },
+                    microBiology: {
+                        jamb: ["biology", "chemistry", "physics", "mathmatics"],
+                        waec: ["EngLish", "mathmatics", "physics", "chemistry", "biology"],
+                        merit: 56, catchment: 52
+                    },
+                    physicsAndElectronics: {
+                        jamb: ["physics", "mathmatics", "chemistry", "biology"],
+                        waec: ["mathmatics", "chemistry", "biology", "EngLish", "physics"],
+                        merit: 40
+                    },
+                    plantScienceAndTechnology: {
+                        jamb: ["biology", "chemistry", "physics", "mathmatics"],
+                        waec: ["mathmatics", "biology", "chemistry", "physics", "English"],
+                        merit: 44, catchment: 43
+                    }
+                }
+            }
+        ];
+
+        function displaySubjects() {
+            const course = document.getElementById('course').value;
+            const department = data[0].Department[course];
+
+            if (department) {
+                let waecSubjects = department.waec.slice(0, 5);  // Get first 4 subjects
+
+                if (department.waec.length > 5) {
+                    const remainingSubjects = department.waec.slice(5).join(' or ');
+                    waecSubjects[4] += ' or ' + remainingSubjects;
+                }
+
+                let waecInputs = '';
+                waecSubjects.forEach((subject, index) => {
+                    waecInputs += `
+                        <label for="waec${index + 1}">${subject}</label>
+                        <input type="text" id="waec${index + 1}" placeholder="Enter WAEC result">
+                    `;
+                });
+
+                let jambSubjects = department.jamb.slice(0, 4);  // Get first 4 JAMB subjects
+
+                if (department.jamb.length > 4) {
+                    const remainingJambSubjects = department.jamb.slice(4).join(' or ');
+                    jambSubjects[3] += ' or ' + remainingJambSubjects;
+                }
+
+                let jambInputs = '';
+                jambSubjects.forEach((subject, index) => {
+                    jambInputs += `
+                        <label for="jamb${index + 1}">${subject}</label>
+                        <input type="text" id="jamb${index + 1}" placeholder="Enter JAMB result">
+                    `;
+                });
+
+                document.getElementById('waec-inputs').innerHTML = `
+                    <h2>WAEC Subjects and Results</h2>
+                    ${waecInputs}
+                `;
+
+                document.getElementById('jamb-inputs').innerHTML = `
+                    <h2>JAMB Subjects and Results</h2>
+                    ${jambInputs}
+                `;
+            } else {
+                document.getElementById('waec-inputs').innerHTML = '';
+                document.getElementById('jamb-inputs').innerHTML = '';
+            }
+        }
+
+        function calculateWaec() {
+            const gradePoints = { A1: 10, B2: 9, B3: 8, C4: 7, C5: 6, C6: 5 };
+            let totalPoints = 0;
+
+            for (let i = 1; i <= 5; i++) {
+                const waecResult = document.getElementById('waec' + i).value.toUpperCase();
+                totalPoints += gradePoints[waecResult] || 0;  // Any invalid result gets 0 points
+            }
+
+            return totalPoints;
+        }
+
+        function calculateJamb() {
+            let jambScore = 0;
+
+            for (let i = 1; i <= 4; i++) {
+                const jambResult = parseInt(document.getElementById('jamb' + i).value);
+                jambScore += isNaN(jambResult) ? 0 : jambResult;  // Ignore non-numeric inputs
+            }
+
+            return jambScore;
+        }
+
+        function calculateAdmission() {
+            const course = document.getElementById('course').value;
+            const waecScore = calculateWaec();
+            const jambScore = calculateJamb();
+
+            let resultMessage = `Your WAEC score: ${waecScore}, JAMB score: ${jambScore}. `;
+
+            if (jambScore < 180) {
+                resultMessage += 'Your JAMB score is below 180. You do not qualify for admission.';
+            } else if (course) {
+                const department = data[0].Department[course];
+
+                if (!department) {
+                    resultMessage += 'The selected course is not available.';
+                } else {
+                    if (waecScore >= department.merit || waecScore >= department.catchment) {
+                        resultMessage += `Congratulations! You qualify for admission to ${course}.`;
+                    } else {
+                        resultMessage += `Unfortunately, you do not meet the WAEC requirements for ${course}.`;
+                    }
+                }
+            }
+
+            document.getElementById('result').innerText = resultMessage;
+        }
+    </script>
+
+</body>
+</html>
