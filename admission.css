@@ -1,11 +1,8 @@
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('/background.jpg'); 
-    background-size: cover;
-    background-position: center;
 }
-
 
 header {
     background-color: rgb(21, 34, 84);
@@ -46,55 +43,42 @@ header {
 }
 
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: calc(100vh - 60px); 
-}
-
-.student-info {
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
+    max-width: 600px;
+    margin: 0 auto; 
+    color:  rgb(21, 34, 84);
 }
-
-.student-pic {
-    width: 100px; /* Adjust width as needed */
-    border-radius: 50%; /* Circular image */
-    margin-right: 20px; /* Space between image and text */
+label {
+    font-weight: bold;
 }
-
-.info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align text to the left */
-}
-
-input {
+select, input {
+    width: 100%;
     padding: 10px;
     margin: 10px 0;
-    width: 200px; /* Set input width */
-    border: 1px solid #ccc;
     border-radius: 4px;
+    border: 1px solid #ccc;
 }
-
 button {
-    padding: 10px 20px;
+    padding: 10px;
+    background-color:  rgb(21, 34, 84);;
+    color: white;
     border: none;
     border-radius: 4px;
-    background-color: #007BFF;
-    color: white;
     cursor: pointer;
-    transition: background-color 0.3s;
+    width: 100%;
 }
-
 button:hover {
-    background-color: #0056b3; 
+    background-color: #0056b3;
+}
+.result {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #e0e0e0;
 }
 
-/* Responsive styles */
 
 @media (max-width: 600px) {
     .nav-links {

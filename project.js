@@ -1,50 +1,104 @@
-// A1 -10
-// B2- 9
-// B3 - 8
-// C4 - 7
-// C5 - 6
-// C6- 5
-// note any other result inputed will have 0 piont
-// In other for the student to gain adminssion to any course, the student wace point should pass the merit point or catchment point else the student will not gain admission
-// Biochemistry
-// Merit: 56
-// Catchment: 54
+import data from "./data";
+function displaySubjects() {
+  const course = document.getElementById("course").value;
+  const department = data[0].Department[course];
 
-// Chemistry
-// Merit: 47
-// Catchment: 45
+  if (department) {
+    let waecSubjects = department.waec.slice(0, 5); // Get first 4 subjects
 
-// Industrial Chemistry
-// Merit: 47
-// Catchment: 45
+    if (department.waec.length > 5) {
+      const remainingSubjects = department.waec.slice(5).join(" or ");
+      waecSubjects[4] += " or " + remainingSubjects;
+    }
 
-// Environmental Biology and Fisheries
-// Merit: 44
-// Catchment: 43
+    let waecInputs = "";
+    waecSubjects.forEach((subject, index) => {
+      waecInputs += `
+                <label for="waec${index + 1}">${subject}</label>
+                <input type="text" id="waec${
+                  index + 1
+                }" placeholder="Enter WAEC result">
+            `;
+    });
 
-// Computer Science
-// Merit: 53
-// Catchment: 45
+    let jambSubjects = department.jamb.slice(0, 4); // Get first 4 JAMB subjects
 
-// Mathematics
-// Merit: 40
+    if (department.jamb.length > 4) {
+      const remainingJambSubjects = department.jamb.slice(4).join(" or ");
+      jambSubjects[3] += " or " + remainingJambSubjects;
+    }
 
-// Industrial Mathematics
-// Merit: 40
+    let jambInputs = "";
+    jambSubjects.forEach((subject, index) => {
+      jambInputs += `
+                <label for="jamb${index + 1}">${subject}</label>
+                <input type="text" id="jamb${
+                  index + 1
+                }" placeholder="Enter JAMB result">
+            `;
+    });
 
-// Geology
-// Merit: 40
+    document.getElementById("waec-inputs").innerHTML = `
+            <h2>WAEC Subjects and Results</h2>
+            ${waecInputs}
+        `;
 
-// Geophysics
-// Merit: 40
+    document.getElementById("jamb-inputs").innerHTML = `
+            <h2>JAMB Subjects and Results</h2>
+            ${jambInputs}
+        `;
+  } else {
+    document.getElementById("waec-inputs").innerHTML = "";
+    document.getElementById("jamb-inputs").innerHTML = "";
+  }
+}
 
-// Microbiology
-// Merit: 56
-// Catchment: 52
+function calculateWaec() {
+  const gradePoints = { A1: 10, B2: 9, B3: 8, C4: 7, C5: 6, C6: 5 };
+  let totalPoints = 0;
 
-// Physics and Electronics
-// Merit: 40
+  for (let i = 1; i <= 5; i++) {
+    const waecResult = document.getElementById("waec" + i).value.toUpperCase();
+    totalPoints += gradePoints[waecResult] || 0; // Any invalid result gets 0 points
+  }
 
-// Plant Science and Biotechnology
-// Merit: 44
-// Catchment: 43
+  return totalPoints;
+}
+
+function calculateJamb() {
+  let jambScore = 0;
+
+  for (let i = 1; i <= 4; i++) {
+    const jambResult = parseInt(document.getElementById("jamb" + i).value);
+    jambScore += isNaN(jambResult) ? 0 : jambResult; // Ignore non-numeric inputs
+  }
+
+  return jambScore;
+}
+
+function calculateAdmission() {
+  const course = document.getElementById("course").value;
+  const waecScore = calculateWaec();
+  const jambScore = calculateJamb();
+
+  let resultMessage = `Your WAEC score: ${waecScore}, JAMB score: ${jambScore}. `;
+
+  if (jambScore < 180) {
+    resultMessage +=
+      "Your JAMB score is below 180. You do not qualify for admission.";
+  } else if (course) {
+    const department = data[0].Department[course];
+
+    if (!department) {
+      resultMessage += "The selected course is not available.";
+    } else {
+      if (waecScore >= department.merit || waecScore >= department.catchment) {
+        resultMessage += `Congratulations! You qualify for admission to ${course}.`;
+      } else {
+        resultMessage += `Unfortunately, you do not meet the WAEC requirements for ${course}.`;
+      }
+    }
+  }
+
+  document.getElementById("result").innerText = resultMessage;
+}
